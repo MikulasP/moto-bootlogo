@@ -1,30 +1,36 @@
-# Motorola Moto Series' Boot Logo
+# Motorola Boot logo editor
 
-> The logo encoding and decoding are based on the script by _carock_[1].
-> Use these scripts at your own risk!
+This repository is a fork of [eriktim](https://github.com/eriktim)'s [moto-bootlogo](https://github.com/eriktim/moto-bootlogo)! 
 
-## Dependencies
+### Dependencies
 
-* Rooted Motorola Moto (tested on Moto G [2013]);
-* `fastboot`;
-* `libpng`.
+The following Linux packages are requied:
+* `fastboot`
+* `libpng-dev`
+
+```bash
+sudo apt update
+sudo apt install fastboot libpng-dev
+```
 
 ## Build
 
 ```bash
-make
+make all
 ```
 
 ## Usage
 
 ### Extract the original bin file
 
-You only need to do so once.
+>**Note:** The extraction process will only succeed if the device was rooted previously.
 
 ```bash
 adb shell su -c "dd if=/dev/block/platform/msm_sdcc.1/by-name/logo of=/sdcard/logo.bin count=1 bs=634418"
 adb pull /sdcard/logo.bin .
 ```
+
+>**Note:** The data length on the logo partition (bs) can vary between devices.
 
 ### Modify the bin file
 
@@ -56,4 +62,6 @@ Make sure your device is connected in _fastboot mode_.
 fastboot flash logo logo-custom.bin
 ```
 
-[1] <http://forum.xda-developers.com/showpost.php?p=48891456&postcount=140>
+## Notes
+
+The source (as the original repo mentioned) is based on the script by carock's [XDA forum comment](http://forum.xda-developers.com/showpost.php?p=48891456&postcount=140).

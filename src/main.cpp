@@ -9,7 +9,7 @@
 
 using namespace std;
 
-vector<string> unlocked_bootloader_screens{"logo_unlocked", "", "", ""};
+vector<string> unlocked_bootloader_screens{"logo_unlocked", "orange1", "orange2", "yellow1"};
 
 void print_usage(void) {
     cout << "Usage: moto-bootlogo [-f] [-i <png>] <logo.bin>" << endl;
@@ -88,21 +88,7 @@ int main(int argc, char *argv[]) {
             return 1;
         }
         cout << "Replaced boot logo successfully!" << endl;
-    }
-
-    if (fixup) {
-        for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
-            if (in_vector(it->first, unlocked_bootloader_screens) && !bin->copy_image_header(it->first, "logo_boot")) {
-                // reset boot logo
-                cerr << "Failed fixing boot logo" << endl;
-                delete bin;
-                return 1;
-            }
-            cout << "Replaced \'" << it->first << "\'!";
-        }
-        cout << "Fixed boot logo!" << endl;
-        exit(0);
-    }   
+    } 
 
     // create PNG images
     for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
@@ -111,6 +97,23 @@ int main(int argc, char *argv[]) {
         BinImage *image = header->get_image();
         image->create_png(tag.append(".png"));
     }
+
+    if (fixup) {
+        for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
+            if (in_vector(it->first, unlocked_bootloader_screens)) {
+                if (!bin->replace_image(it->first, "logo_boot.png")) {
+                    // reset boot logo
+                    cerr << "Failed fixing boot logo" << endl;
+                    delete bin;
+                    return 1;
+                }
+                cout << "Replaced \'" << it->first << "\'" << endl;
+            }
+            
+        }
+        cout << "Fixed boot logo!" << endl;
+        exit(0);
+    }  
 
     // exit
     delete bin;

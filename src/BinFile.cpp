@@ -78,6 +78,7 @@ map<string, BinHeader*> BinFile::get_headers(void)
 
 bool BinFile::replace_image(string tag, string filename)
 {
+
     if (_count < 0) {
         _parse_header();
     }
@@ -186,13 +187,16 @@ void BinFile::_parse_header(void)
 
     // next byte contains the header size
     _file.read(bytes, 2);
-    uint16_t size = ((uint16_t)bytes[1]) << 8;
-    size += (uint16_t)bytes[0];
+
+    // Get the header's actual length
+    uint16_t size = 0;
+    memcpy(&size, &bytes, 0x02);
+
     if (_file.fail() || !size) {
         cerr << "Header is empty" << endl;
         return;
     }
-    cout << "Header size: " << (int)size << " bytes." << endl;
+    cout << "Header size: " << size << " bytes.\t" << endl;
 
     // move to first logo
     _file.seekg(2, ios::cur);
@@ -234,4 +238,7 @@ void BinFile::_parse_header(void)
 
     _count = _headers.size();
 
+    cout << "Parsed headers successfully! Count: " << _count << endl;
+
 }
+
