@@ -4,3 +4,5 @@ build/
 *.png
 *.raw
 *.swp
+logo.*
+moto-bootlogo
