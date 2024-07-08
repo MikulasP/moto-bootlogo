@@ -1,6 +1,7 @@
 #include <iomanip>
 #include <iostream>
 #include <png.h>
+#include <zlib.h>
 #include <sstream>
 #include <stdio.h>
 #include <string.h>
@@ -47,7 +48,7 @@ BinImage::~BinImage()
 
 void BinImage::create_png(string filename)
 {
-    cout << "Image size: " << _width << " x " << _height << endl;
+    cout << "Image " << _header->get_name().c_str() << " size: " << _width << " x " << _height << endl;
 
     _decode();
     if (!_raw) {
@@ -373,4 +374,12 @@ size_t BinImage::_read_dimension(void)
         value += bytes[i] << 8 * (1 - i);
     }
     return value;
+}
+
+void BinImage::set_header(BinHeader* header) {
+    if (!header) {
+        return;
+    }
+
+    _header = header;
 }

@@ -7,6 +7,8 @@
 
 using namespace std;
 
+const string unlocked_bootloader_screens[] = {"logo_unlocked", "orange1", "orange2", "yellow1"};
+
 void print_usage(void) {
     cout << "Usage: moto-bootlogo [-f] [-i <png>] <logo.bin>" << endl;
     cout << endl;
@@ -67,6 +69,11 @@ int main(int argc, char *argv[]) {
     // create BinFile
     BinFile *bin = new BinFile(filename);
 
+    // parse (and thus verify) BinFile
+    map<string, BinHeader*> headers = bin->get_headers();
+    int size = headers.size();
+    cout << "Found " << size << " image" << (size == 1 ? "" : "s") << "." << endl;
+
     if (fixup) {
         // first insert the PNG as this changes the header
         if (!png.empty()) {
@@ -78,6 +85,10 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
+            
+        }
+
         // reset boot logo
         if (!bin->copy_image_header("logo_boot", "logo_unlocked")) {
             cerr << "Failed fixing boot logo" << endl;
@@ -87,15 +98,10 @@ int main(int argc, char *argv[]) {
 
     }
 
-    // parse (and thus verify) BinFile
-    map<string, BinHeader*> headers = bin->get_headers();
-    int size = headers.size();
-    cout << "Found " << size << " image"
-            << (size == 1 ? "" : "s") << "." << endl;
+    
 
     // create PNG images
-    for (map<string, BinHeader*>::const_iterator it = headers.begin(),
-            end = headers.end(); it != end; ++it) {
+    for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
         string tag = it->first;
         BinHeader *header = it->second;
         BinImage *image = header->get_image();

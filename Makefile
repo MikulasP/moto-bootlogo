@@ -8,7 +8,7 @@ LFLAGS = -Wall $(DEBUG)
 all: clean-all build clean
 
 build: $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) -o ./build/moto-bootlogo -I/usr/include/libpng16 -lpng
+	$(CC) $(LFLAGS) $(OBJS) -o ./build/moto-bootlogo -I/usr/include/libpng -lpng
 
 build/main.o: src/main.cpp
 	$(CC) $(CFLAGS) -o build/main.o src/main.cpp
@@ -20,10 +20,10 @@ build/BinHeader.o: src/BinHeader.cpp
 	$(CC) $(CFLAGS) -o build/BinHeader.o src/BinHeader.cpp
 
 build/BinImage.o: src/BinImage.cpp
-	$(CC) $(CFLAGS) -o build/BinImage.o src/BinImage.cpp -I/usr/include/libpng16 -lpng
+	$(CC) $(CFLAGS) -o build/BinImage.o src/BinImage.cpp -I/usr/include/libpng -lpng
 
 clean-all:
-	rm -rf ./build/*
+	find ./build ! -name logo.* -type f -delete
 
 clean:
 	rm -f build/*.o

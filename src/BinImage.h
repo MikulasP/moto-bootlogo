@@ -2,6 +2,9 @@
 #define BINIMAGE_H
 
 #include <stdint.h>
+#include "BinHeader.h"
+
+class BinHeader;
 
 using namespace std;
 
@@ -14,6 +17,7 @@ public:
     uint8_t *get_data(void);
     size_t get_size(void);
     bool set_data_from_png(string filename);
+    void set_header(BinHeader* header);
 
 private:
     size_t _block_length(bool repeat, size_t g);
@@ -27,6 +31,8 @@ private:
     uint8_t *_data;
     size_t _g;
     uint8_t *_raw;
+
+    BinHeader* _header;
 };
 
 #endif

@@ -186,7 +186,7 @@ void BinFile::_parse_header(void)
 
     // next byte contains the header size
     _file.read(bytes, 2);
-    uint16_t size = (uint16_t)bytes[1] << 8;
+    uint16_t size = ((uint16_t)bytes[1]) << 8;
     size += (uint16_t)bytes[0];
     if (_file.fail() || !size) {
         cerr << "Header is empty" << endl;
@@ -225,7 +225,8 @@ void BinFile::_parse_header(void)
 
         // create objects
         BinImage *image = new BinImage(data, length);
-        BinHeader *header = new BinHeader(offset, length, g - 32, image);
+        BinHeader *header = new BinHeader(offset, length, g - 32, image, tag);
+        image->set_header(header);
 
         // keep a reference to the image header
         _headers.insert(pair<string, BinHeader*>(tag, header));
