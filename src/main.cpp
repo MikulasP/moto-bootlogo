@@ -1,4 +1,6 @@
 
+#include <vector>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
@@ -7,7 +9,7 @@
 
 using namespace std;
 
-const string unlocked_bootloader_screens[] = {"logo_unlocked", "orange1", "orange2", "yellow1"};
+vector<string> unlocked_bootloader_screens{"logo_unlocked", "", "", ""};
 
 void print_usage(void) {
     cout << "Usage: moto-bootlogo [-f] [-i <png>] <logo.bin>" << endl;
@@ -18,6 +20,10 @@ void print_usage(void) {
     cout << "            Note this implies '-f'. The PNG image's size must not" << endl;
     cout << "            exceed the restrictions on the size of the binary file." << endl;
     cout << endl;
+}
+
+bool in_vector(const string &value, const vector<string> &vec) {
+    return find(vec.begin(), vec.end(), value) != vec.end();
 }
 
 int main(int argc, char *argv[]) {
@@ -74,28 +80,28 @@ int main(int argc, char *argv[]) {
     int size = headers.size();
     cout << "Found " << size << " image" << (size == 1 ? "" : "s") << "." << endl;
 
-    if (fixup) {
-        // first insert the PNG as this changes the header
-        if (!png.empty()) {
-            if (!bin->replace_image("logo_boot", png)) {
-                cerr << "Failed replacing boot logo with '"
-                        << png << "'" << endl;
-                delete bin;
-                return 1;
-            }
-        }
-
-        for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
-            //if (unlocked_bootloader_screens->find(it->first))
-        }
-
-        // reset boot logo
-        if (!bin->copy_image_header("logo_boot", "logo_unlocked")) {
-            cerr << "Failed fixing boot logo" << endl;
+    // first insert the PNG as this changes the header
+    if (!png.empty()) {
+        if (!bin->replace_image("logo_boot", png)) {
+            cerr << "Failed replacing boot logo with '" << png << "'" << endl;
             delete bin;
             return 1;
         }
+        cout << "Replaced boot logo successfully!" << endl;
+    }
 
+    if (fixup) {
+        for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
+            if (in_vector(it->first, unlocked_bootloader_screens) && !bin->copy_image_header(it->first, "logo_boot")) {
+                // reset boot logo
+                cerr << "Failed fixing boot logo" << endl;
+                delete bin;
+                return 1;
+            }
+            cout << "Replaced \'" << it->first << "\'!";
+        }
+        cout << "Fixed boot logo!" << endl;
+        exit(0);
     }   
 
     // create PNG images
