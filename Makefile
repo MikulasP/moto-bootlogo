@@ -5,10 +5,10 @@ CFLAGS = -Wall -c $(DEBUG)
 LFLAGS = -Wall $(DEBUG) 
 
 
-all: clean build clean
+all: clean-all build clean
 
 build: $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) -o moto-bootlogo -I/usr/include/libpng16 -lpng
+	$(CC) $(LFLAGS) $(OBJS) -o ./build/moto-bootlogo -I/usr/include/libpng16 -lpng
 
 build/main.o: src/main.cpp
 	$(CC) $(CFLAGS) -o build/main.o src/main.cpp
@@ -22,5 +22,8 @@ build/BinHeader.o: src/BinHeader.cpp
 build/BinImage.o: src/BinImage.cpp
 	$(CC) $(CFLAGS) -o build/BinImage.o src/BinImage.cpp -I/usr/include/libpng16 -lpng
 
+clean-all:
+	rm -rf ./build/*
+
 clean:
-	rm -f build/*
+	rm -f build/*.o
