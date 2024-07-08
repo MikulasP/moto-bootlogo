@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
         }
 
         for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
-            
+            //if (unlocked_bootloader_screens->find(it->first))
         }
 
         // reset boot logo
@@ -96,9 +96,7 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
-    }
-
-    
+    }   
 
     // create PNG images
     for (map<string, BinHeader*>::const_iterator it = headers.begin(), end = headers.end(); it != end; ++it) {
