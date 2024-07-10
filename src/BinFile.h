@@ -20,6 +20,7 @@ public:
     bool copy_image_header(string fromTag, string toTag);
     map<string, BinHeader*> get_headers(void);
     bool replace_image(string tag, string filename);
+    void export_images(string filename);
 
 private:
     size_t _read_value(void);

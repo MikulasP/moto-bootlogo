@@ -242,3 +242,8 @@ void BinFile::_parse_header(void)
 
 }
 
+void BinFile::export_images(string filename) {
+    if (_count < 0) {
+        _parse_header();
+    }
+}
